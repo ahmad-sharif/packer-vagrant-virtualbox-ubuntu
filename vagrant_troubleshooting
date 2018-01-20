@@ -1,0 +1,66 @@
+Vagrant is stuck: "Authentication failure. Retrying..."
+
+
+Solution:
+
+You can unstick the vagrant machine, but it involves some careful copying and pasting.
+Find the IdentityFile vagrant is using:
+
+$ vagrant ssh-config
+Host default
+  HostName 127.0.0.1
+  User vagrant
+  Port 2222
+  UserKnownHostsFile /dev/null
+  StrictHostKeyChecking no
+  PasswordAuthentication no
+  IdentityFile /Users/ned/.vagrant.d/insecure_private_key
+  IdentitiesOnly yes
+  LogLevel FATAL
+$
+
+Look in the IdentityFile to see the public key. This will be a long line (380 characters or so):
+$ ssh-keygen -y -f /Users/ahmad/.vagrant.d/insecure_private_key
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAA...rucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ==
+$
+
+
+Log in to the vagrant machine with the password "vagrant":
+
+$ ssh -p 2222 -o UserKnownHostsFile=/dev/null vagrant@127.0.0.1
+The authenticity of host '[127.0.0.1]:2222 ([127.0.0.1]:2222)' can't be established.
+RSA key fingerprint is dc:48:73:c3:18:e4:9d:34:a2:7d:4b:20:6a:e7:3d:3e.
+Are you sure you want to continue connecting (yes/no)? yes
+Warning: Permanently added '[127.0.0.1]:2222' (RSA) to the list of known hosts.
+vagrant@127.0.0.1's password: vagrant
+Welcome to Ubuntu 16.04.1 LTS (GNU/Linux 4.4.0-31-generic x86_64)
+...
+Last login: Fri Jan 19 14:23:24 2018 from 10.0.2.2
+$
+
+Add the public key to the authorized_keys file. You need to copy the entire ssh-rsa line from the ssh-keygen command above, and paste it here, then type Control-D to end the command:
+
+vagrant@vagrant:~$ cat >> /home/vagrant/.ssh/authorized_keys
+ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAA...rucXzcWyLbIbEgE98OHlnVYCzRdK8jlqm8tehUc9c9WhQ==
+<Ctrl-D>
+vagrant@vagrant:~$
+
+Log out of the vagrant machine and halt it:
+vagrant@vagrant:~$ exit
+logout
+Connection to 127.0.0.1 closed.
+$ vagrant halt
+==> default: Attempting graceful shutdown of VM...
+    default:
+    default: Vagrant insecure key detected. Vagrant will automatically replace
+    default: this with a newly generated keypair for better security.
+    default:
+    default: Inserting generated public key within guest...
+    default: Removing insecure key from the guest if it's present...
+    default: Key inserted! Disconnecting and reconnecting using new SSH key...
+==> default: [vagrant-hostsupdater] Removing hosts
+$
+
+Bring up the vagrant machine again:
+$ vagrant up
+
