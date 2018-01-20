@@ -1,0 +1,41 @@
+{
+  "variables": {
+    "dockerhub_username": "{{env `DOCKERHUB_USERNAME`}}",
+    "dockerhub_password": "{{env `DOCKERHUB_PASSWORD`}}",
+    "dockerhub_email": "{{env `DOCKERHUB_EMAIL`}}",
+    "dockerhub_push_repository": "{{env `DOCKERHUB_PUSH_REPOSITORY`}}"
+
+  },
+  "builders": [
+    {
+      "type": "docker",
+      "image": "ubuntu:latest",
+      "export_path": "/tmp/mydocker.tar",
+      "ssh_pty": true
+    }
+  ],
+  "provisioners": [
+      {
+        "type": "shell",
+        "inline": [
+          "apt-get update",
+          "apt-get install python -yq"
+      ]
+    }
+  ],
+  "post-processors": [
+    [
+      {
+          "type": "docker-import",
+          "repository": "{{user `dockerhub_push_repository`}}",
+          "tag": "{{ timestamp }}"
+      },
+      {
+          "type": "docker-push",
+          "login": "true",
+          "login_username": "{{user `dockerhub_username`}}",
+          "login_password": "{{user `dockerhub_password`}}"
+      }
+    ]
+  ]
+}
