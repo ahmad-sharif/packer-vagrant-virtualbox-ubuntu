@@ -1,0 +1,29 @@
+{
+  "variables": {
+    "home": "{{env `HOME`}}"
+  },
+  "builders": [{
+    "type": "virtualbox-ovf",
+    "source_path": "{{user `home`}}/Documents/laravel_default_1516272283546_86107.ova",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "ssh_wait_timeout": "30s",
+    "shutdown_command": "echo 'packer' | sudo -S shutdown -P now"
+  }],
+  "provisioners": [
+    {
+    "type": "shell",
+    "inline": ["echo 'my additional provisioning steps'"]
+    },
+
+    {
+    "type": "shell",
+    "script": "insecure_key.sh"
+     }
+   ],
+  "post-processors": [{
+    "type": "vagrant",
+    "keep_input_artifact": true,
+    "output": "box/mybox-from-ovf.box"
+  }]
+}

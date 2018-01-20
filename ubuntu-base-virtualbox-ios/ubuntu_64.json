@@ -1,0 +1,83 @@
+{
+    "variables": {
+        "ssh_name": "vagrant",
+        "ssh_pass": "vagrant",
+        "hostname": "packer-localhost"
+    },
+
+    "builders": [{
+        "type": "virtualbox-iso",
+        "guest_os_type": "Ubuntu_64",
+        "http_directory": "http",
+
+        "vboxmanage": [
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--memory",
+              "1024"
+            ],
+            [
+              "modifyvm",
+              "{{.Name}}",
+              "--cpus",
+              "1"
+            ]
+        ],
+
+        "disk_size" : "10000",
+
+        "iso_url": "/Users/ahmad/Downloads/ubuntu-16.04.3-server-amd64.iso",
+        "iso_checksum": "f3532991e031cae75bcf5e695afb844dd278fff9",
+        "iso_checksum_type": "sha1",
+
+        "ssh_username": "{{user `ssh_name`}}",
+        "ssh_password": "{{user `ssh_pass`}}",
+        "ssh_wait_timeout": "20m",
+
+        "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
+
+        "boot_command" : [
+              "<enter><f6><esc>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs><bs><bs>",
+          		"<bs><bs><bs>",
+    		      "auto preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg ",
+              "debian-installer=en_CA locale=en_CA kbd-chooser/method=us ",
+              "hostname=packer-localhost ",
+              "fb=false debconf/frontend=noninteractive ",
+              "keyboard-configuration/modelcode=SKIP keyboard-configuration/layout=USA ",
+              "keyboard-configuration/variant=USA console-setup/ask_detect=false ",
+              "vga=788 initrd=/install/initrd.gz quiet --- ",
+              "<enter>"
+          ]
+      }],
+
+      "provisioners": [{
+        "type": "shell",
+        "script": "insecure_key.sh"
+      }],
+
+      "post-processors": [
+        {
+            "type": "vagrant",
+            "only": ["virtualbox-iso"],
+            "output": "base-ubuntu16.04.box"
+        }
+      ]
+
+}
