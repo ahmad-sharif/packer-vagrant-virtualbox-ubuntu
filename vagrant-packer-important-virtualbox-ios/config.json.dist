@@ -1,0 +1,12 @@
+{
+    "headless": "true",
+    "TZ_CONTINENT": "UTC",
+    "TZ_COUNTRY": "",
+    "DEFAULT_LOCALE": "en_US",
+    "DEFAULT_CHARSET": "UTF-8",
+    "hardware_disk": "40960",
+    "hardware_cpu": "2",
+    "hardware_memory": "1024",
+    "network_hostname": "vagrant-docker",
+    "network_domain": "local"
+}
