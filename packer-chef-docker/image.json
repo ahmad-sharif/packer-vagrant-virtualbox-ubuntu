@@ -1,0 +1,43 @@
+{
+  "builders": [
+    {
+      "type": "docker",
+      "image": "ubuntu:latest",
+      "export_path": "/tmp/mydocker.tar",
+      "ssh_pty": true
+    }
+  ],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": [
+        "apt-get update",
+        "apt-get install curl sudo net-tools -y"
+
+      ]
+  },
+
+    {
+      "type": "chef-solo",
+      "version": "12.10.24",
+      "cookbook_paths": "cookbooks",
+      "roles_path": "cookbooks/roles",
+      "run_list": [ 
+        "recipe[cookbook-name]", 
+        "recipe[cookbook-name::recipe]", 
+        "recipe[cookbook-name::recipe]"
+      ]
+    }
+  ],
+
+   "post-processors": [
+    [
+      {
+          "type": "docker-import",
+          "repository": "{{user `dockerhub_push_repository`}}",
+          "tag": "{{ timestamp }}"
+      }
+    ]
+  ] 
+}
