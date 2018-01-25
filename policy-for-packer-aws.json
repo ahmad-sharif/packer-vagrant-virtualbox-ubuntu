@@ -1,0 +1,95 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": [
+                "ec2:DescribeSecurityGroups",
+                "ec2:AuthorizeSecurityGroupIngress",
+                "ec2:RevokeSecurityGroupIngress"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "ec2:CreateKeyPair",
+                "ec2:Deletekeypair",
+                "ec2:DescribeKeyPair"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "ec2:CreateImage",
+                "ec2:RegisterImage",
+                "ec2:DescribeImage",
+                "ec2:DescribeImages"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Action": [
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnaphot",
+                "ec2:DescribeSnapshots"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        },
+        {
+            "Sid": "PackerSnapshotAccess",
+            "Action": [
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnaphot",
+                "ec2:DescribeSnapshots"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Sid": "PackerIAMPassRole",
+            "Effect": "Allow",
+            "Action": "iam:PassRole",
+            "Resource": [
+                "*"
+            ]
+        },
+        {
+            "Action": [
+                "ec2:RunInstances",
+                "ec2:StartInstances",
+                "ec2:StopInstances",
+                "ec2:RebootInstances",
+                "ec2:TerminateInstances",
+                "ec2:Describe*",
+                "ec2:CreateTags",
+                "iam:GetInstanceProfiles",
+                "iam:ListInstanceProfiles",
+                "ec2:ModifyInstanceAttribute",
+                "ec2:GetPasswordData",
+                "ec2:AttachVolume",
+                "ec2:DetachVolume",
+                "ec2:CreateSnapshot",
+                "ec2:DeleteSnaphot",
+                "ec2:AuthorizeSecurityGroup*",
+                "ec2:RevokeSecurityGroup*"
+            ],
+            "Resource": [
+                "*"
+            ],
+            "Effect": "Allow"
+        }
+    ]
+}
